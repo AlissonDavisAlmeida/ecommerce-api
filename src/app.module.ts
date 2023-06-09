@@ -14,8 +14,9 @@ import { envFilePath } from "./utils/constants";
     }),
     TypeOrmModule.forRoot({
       ...databaseConfig(),
-      synchronize: true,
       entities: [`${__dirname}/**/*.entity{.ts,.js}`],
+      migrations: ["dist/database/migrations/*{.ts,.js}"],
+      migrationsRun: true,
     }),
   ],
   controllers: [],
