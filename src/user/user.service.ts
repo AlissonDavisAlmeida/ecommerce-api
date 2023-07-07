@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreateUserDTO } from "./Dtos/createUser.dto";
+import { CreateUserDTO, OutputUserDTO } from "./dtos/User.dto";
 import { UserEntity } from "./entities/user.entity";
 import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
@@ -16,7 +16,7 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>
   ) { }
 
-  public async createUser(createUser: CreateUserDTO): Promise<UserEntity> {
+  public async createUser(createUser: CreateUserDTO): Promise<OutputUserDTO> {
 
     const hashPassword = await bcrypt.hash(createUser.password, +this.configService.get("SALT_OR_ROUNDS"));
 
@@ -26,10 +26,9 @@ export class UserService {
       password: hashPassword,
     });
 
-    return {
-      ...user,
-      password: undefined,
-    };
+    const outputUserDto = new OutputUserDTO(user);
+
+    return outputUserDto;
   }
 
   public async getAllUsers(): Promise<UserEntity[]> {
