@@ -12,5 +12,6 @@ import { CacheModule } from "src/cache/cache.module";
     TypeOrmModule.forFeature([CityEntity]),
     CacheModule,
   ],
+  exports: [CityService],
 })
 export class CityModule { }
