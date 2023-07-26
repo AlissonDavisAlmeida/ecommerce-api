@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Post, UsePipes, ValidationPipe, Param, HttpException } from "@nestjs/common";
 import { CreateUserDTO, OutputUserDTO } from "./dtos/User.dto";
 import { UserService } from "./user.service";
 
@@ -26,6 +26,21 @@ export class UserController {
       return await this.userService.createUser(createUser);
     } catch (error) {
       return JSON.stringify(error.detail);
+    }
+  }
+
+  @Get("/:id")
+  public async getUserById(@Param("id") id: number) {
+
+    try {
+
+      const user = await this.userService.getUserByIdUsingReferences(id);
+
+      // const outputUser = new OutputUserDTO(user);
+
+      return user;
+    } catch (error) {
+      throw new HttpException(error.query, 500);
     }
   }
 }

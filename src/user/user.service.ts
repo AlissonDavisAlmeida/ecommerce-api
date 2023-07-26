@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateUserDTO, OutputUserDTO } from "./dtos/User.dto";
+import { CreateUserDTO, OutputUserDTO, OutputUserWithAddressDTO } from "./dtos/User.dto";
 import { UserEntity } from "./entities/user.entity";
 import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
@@ -35,6 +35,21 @@ export class UserService {
     return await this.userRepository.find({
       select: ["id", "name", "email", "phone", "type_user", "created_at", "updated_at"],
     });
+  }
+
+  public async getUserByIdUsingReferences(id: number): Promise<OutputUserDTO> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ["address"],
+    });
+
+    if (!user) {
+      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    const outputUser = new OutputUserWithAddressDTO(user);
+
+    return outputUser;
   }
 
   public async getUserById(id: number): Promise<UserEntity> {

@@ -1,5 +1,6 @@
 import { IsString } from "class-validator";
 import { UserEntity } from "../entities/user.entity";
+import { AddressDTO } from "src/address/dtos/Address.dto";
 
 export class CreateUserDTO {
   @IsString()
@@ -32,4 +33,15 @@ export class OutputUserDTO {
     this.cpf = userEntity.cpf;
   }
 
+}
+
+export class OutputUserWithAddressDTO extends OutputUserDTO {
+  
+  address: AddressDTO[];
+
+  constructor(userEntity: UserEntity){
+    super(userEntity);
+    this.address = userEntity.address.map(address => new AddressDTO(address));
+  }
+  
 }
