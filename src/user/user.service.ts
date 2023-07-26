@@ -40,7 +40,13 @@ export class UserService {
   public async getUserByIdUsingReferences(id: number): Promise<OutputUserDTO> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ["address"],
+      relations: {
+        address: {
+          city: {
+            state: true,
+          },
+        },
+      },
     });
 
     if (!user) {

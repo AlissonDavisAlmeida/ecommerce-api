@@ -36,11 +36,9 @@ export class UserController {
 
       const user = await this.userService.getUserByIdUsingReferences(id);
 
-      // const outputUser = new OutputUserDTO(user);
-
       return user;
     } catch (error) {
-      throw new HttpException(error.query, 500);
+      throw new HttpException(error, 500);
     }
   }
 }
