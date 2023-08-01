@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateUserDTO, OutputUserDTO, OutputUserWithAddressDTO } from "./dtos/User.dto";
 import { UserEntity } from "./entities/user.entity";
 import * as bcrypt from "bcrypt";
@@ -65,6 +65,18 @@ export class UserService {
 
     if (!user) {
       throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  public async findByEmail(email: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`Email: ${email} not found`);
     }
 
     return user;
