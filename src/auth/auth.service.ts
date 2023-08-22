@@ -33,7 +33,7 @@ export class AuthService {
 
     const payload = new JwtPayload(userEntity).toJson();
 
-    const accessToken = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload,{secret: process.env.JWT_SECRET});
 
     return {
       accessToken,
