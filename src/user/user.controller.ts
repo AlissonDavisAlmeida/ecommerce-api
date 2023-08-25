@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, UsePipes, ValidationPipe, Param, HttpException } from "@nestjs/common";
 import { CreateUserDTO, OutputUserDTO } from "./dtos/User.dto";
 import { UserService } from "./user.service";
-import { Roles } from "src/decorators/role.decorators";
+import { Roles } from "src/decorators/role.decorator";
 import { UserType } from "./enums/user-role.enum";
 
 @Controller("user")
@@ -13,6 +13,7 @@ export class UserController {
 
   @Get()
   @Roles(UserType.User)
+  
   public async getAllUsers() {
     const users = await this.userService.getAllUsers();
 
