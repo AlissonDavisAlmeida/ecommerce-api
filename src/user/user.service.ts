@@ -18,6 +18,12 @@ export class UserService {
 
   public async createUser(createUser: CreateUserDTO): Promise<OutputUserDTO> {
 
+    const isEmailExists = await this.findByEmail(createUser.email).catch(() => undefined);
+    
+    if (isEmailExists) {
+      throw new HttpException("Email already exists", HttpStatus.BAD_REQUEST);
+    }
+
     const hashPassword = await bcrypt.hash(createUser.password, +this.configService.get("SALT_OR_ROUNDS"));
 
     const user = await this.userRepository.save({

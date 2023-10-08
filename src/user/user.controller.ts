@@ -29,7 +29,7 @@ export class UserController {
 
       return await this.userService.createUser(createUser);
     } catch (error) {
-      return JSON.stringify(error.detail);
+      throw error;
     }
   }
 
