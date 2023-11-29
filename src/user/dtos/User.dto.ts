@@ -1,6 +1,6 @@
 import { IsString } from "class-validator";
 import { UserEntity } from "../entities/user.entity";
-import { AddressDTO } from "src/address/dtos/Address.dto";
+import { AddressDTO } from "../../address/dtos/Address.dto";
 
 export class CreateUserDTO {
   @IsString()

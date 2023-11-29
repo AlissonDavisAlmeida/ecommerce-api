@@ -1,5 +1,5 @@
 import { AddressEntity } from "../entities/address.entity";
-import { CityDTO } from "src/city/dtos/City.dto";
+import { CityDTO } from "../../city/dtos/City.dto";
 
 export class AddressDTO {
   complement: string;
