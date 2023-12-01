@@ -1,3 +1,4 @@
+import { CreateUserDTO } from "../dtos/User.dto";
 import { UserEntity } from "../entities/user.entity";
 import { UserType } from "../enums/user-role.enum";
 
@@ -12,4 +13,12 @@ export const userEntityMock: UserEntity = {
   type_user: UserType.User,
   updated_at: new Date(),
   address: [],
+};
+
+export const createUserMock: CreateUserDTO = {
+  cpf: "12345678910",
+  email: "mock@email.com",
+  name: "Mock User",
+  password: "mockPassword",
+  phone: "12345678910",
 };

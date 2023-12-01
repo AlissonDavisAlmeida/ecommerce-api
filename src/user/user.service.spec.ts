@@ -5,14 +5,14 @@ import { UserEntity } from "./entities/user.entity";
 import { ConfigService } from "@nestjs/config";
 import { Environment } from "../utils/types";
 import { Repository } from "typeorm";
-import { userEntityMock } from "./mocks/user.mock";
+import { createUserMock, userEntityMock } from "./mocks/user.mock";
 import { HttpException, NotFoundException } from "@nestjs/common";
-import { OutputUserWithAddressDTO } from "./dtos/User.dto";
+import { OutputUserDTO, OutputUserWithAddressDTO } from "./dtos/User.dto";
 
 describe("UserService", () => {
   let service: UserService;
   let userEntityRepository: Repository<UserEntity>;
-  let configServiceMock: jest.Mock<ConfigService<Environment>>;
+  let configServiceMock: ConfigService<Environment>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,7 +20,9 @@ describe("UserService", () => {
         UserService,
         {
           provide: ConfigService,
-          useValue: configServiceMock,
+          useValue: {
+            get: jest.fn().mockReturnValue(10),
+          },
         },
         {
           provide: getRepositoryToken(UserEntity),
@@ -32,9 +34,10 @@ describe("UserService", () => {
         },
       ],
     }).compile();
-
+    
     service = module.get<UserService>(UserService);
     userEntityRepository = module.get<Repository<UserEntity>>(getRepositoryToken(UserEntity));
+    configServiceMock = module.get<ConfigService<Environment>>(ConfigService);
   });
 
   it("should be defined", () => {
@@ -70,6 +73,11 @@ describe("UserService", () => {
     await expect(service.getUserById(userEntityMock.id)).rejects.toThrowError(HttpException);
     expect(findOneSpy).toBeCalledTimes(1);
   });
+  it("should returns an error when throws", async () => {
+    const findOneSpy = jest.spyOn(userEntityRepository, "findOne").mockRejectedValueOnce(new Error());
+    await expect(service.getUserById(userEntityMock.id)).rejects.toThrowError();
+    expect(findOneSpy).toBeCalledTimes(1);
+  });
 
   it("should returns user in method getUserByIdUsingReferences", async () => {
     const outputUser = await service.getUserByIdUsingReferences(userEntityMock.id);
@@ -78,6 +86,25 @@ describe("UserService", () => {
     expect(outputUser).toBeDefined();
     expect(outputUser).toEqual(expectedOutputUser);
 
+  });
+  it("should returns an error if user already exists when create user", async () => {
+
+    expect(service.createUser(createUserMock)).rejects.toThrowError(new HttpException("Email already exists", 400));
+
+  });
+
+  it("should returns an user when create user", async () => {
+    const findOneSpy = jest.spyOn(userEntityRepository, "findOne").mockResolvedValueOnce(undefined);
+    jest.spyOn(userEntityRepository, "save").mockResolvedValueOnce(userEntityMock);
+    const configServiceGetSpy = jest.spyOn(configServiceMock, "get");
+
+    const outputUser = await service.createUser(createUserMock);
+    const expectedOutputUser = new OutputUserDTO(userEntityMock);
+    expect(outputUser).toBeDefined();
+    expect(outputUser).toEqual(expectedOutputUser);
+
+    expect(configServiceGetSpy).toBeCalledTimes(1);
+    expect(findOneSpy).toBeCalledTimes(1);
   });
 });
  
