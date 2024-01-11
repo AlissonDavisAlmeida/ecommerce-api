@@ -1,6 +1,6 @@
 import { CityEntity } from "../../city/entities/city.entity";
 import { UserEntity } from "../../user/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
 
 @Entity({
   name: "address",
@@ -32,9 +32,9 @@ export class AddressEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.address)
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
-    user?: UserEntity;
+    user?: Relation<UserEntity>;
 
   @ManyToOne(() => CityEntity, (city) => city.address)
   @JoinColumn({ name: "city_id", referencedColumnName: "id" })
-    city?: CityEntity;
+    city?: Relation<CityEntity>;
 }

@@ -13,5 +13,9 @@
       },
       "baseUrl": "./"
     },
+    "module": {
+      "type": "commonjs",
+      "noInterop": true
+    },
     "minify": false
   }
