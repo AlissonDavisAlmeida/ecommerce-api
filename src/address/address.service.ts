@@ -1,10 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddressEntity } from "./entities/address.entity";
 import { Repository } from "typeorm";
 import { CreateAddressDTO } from "./dtos/CreateAddress.dto";
-import { UserService } from "src/user/user.service";
-import { CityService } from "src/city/city.service";
+import { UserService } from "../user/user.service";
+import { CityService } from "../city/city.service";
 
 @Injectable()
 export class AddressService {
